@@ -1,6 +1,7 @@
 import User from "../models/user-model.js";
 import bcryptjs from "bcryptjs";
-export const signUp = async (req, res) => {
+import { errorHandler } from "../utils/error.js";
+export const signUp = async (req, res, next) => {
   try {
     const hashPassword = bcryptjs.hashSync(req.body.password, 10);
     const response = await User.create({
@@ -15,11 +16,6 @@ export const signUp = async (req, res) => {
       err: {},
     });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong in controller layer of Auth",
-      data: {},
-      err: error,
-    });
+    next(error);
   }
 };
