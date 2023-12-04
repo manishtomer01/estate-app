@@ -20,6 +20,6 @@ app.use((err, req, res, next) => {
   });
 });
 app.listen(3000, () => {
-  console.log("Server start running on portNumber 3000 !!!");
   connect();
+  console.log("Server start running on portNumber 3000 !!!");
 });
