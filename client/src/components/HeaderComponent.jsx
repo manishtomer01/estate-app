@@ -1,6 +1,8 @@
 import { IoSearchSharp } from "react-icons/io5";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 export default function HeaderComponent() {
+  const { currentUser } = useSelector((state) => state.user);
   return (
     <header className="shadow bg-slade-200-md">
       <div className="flex items-center justify-between max-w-6xl p-3 mx-auto">
@@ -29,8 +31,16 @@ export default function HeaderComponent() {
               About
             </li>
           </Link>
-          <Link to={"/sign-in"}>
-            <li className="text-slate-700 hover:underline">SignIn</li>
+          <Link to={"/profile"}>
+            {currentUser ? (
+              <img
+                className="object-cover rounded-full h-7 w-7"
+                src={currentUser.avator}
+                alt="profile"
+              />
+            ) : (
+              <li className="text-slate-700 hover:underline">SignIn</li>
+            )}
           </Link>
         </ul>
       </div>
