@@ -7,8 +7,7 @@ var userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     avator: {
       type: String,
-      default:
-        "https://srcwap.com/wp-content/uploads/2022/08/abstract-user-flat-4.png",
+      default: "https://source.unsplash.com/random/807x600",
     },
   },
   { timestamps: true }
