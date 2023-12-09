@@ -7,7 +7,7 @@ export function test(req, res) {
   });
 }
 
-export async function updateUserInfo(req, res, next) {
+export async function updateUser(req, res, next) {
   // console.log("req.user:>> ", res.user);
   if (res.user.id !== req.params.id)
     return next(errorHandler(401, "you can only updatr your own account !!!"));
@@ -29,6 +29,18 @@ export async function updateUserInfo(req, res, next) {
     );
     const { password, ...rest } = updateUser._doc;
     res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteUser(req, res, next) {
+  if (res.user.id !== req.params.id)
+    return next(errorHandler(401, "you can only delete your account only"));
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.clearCookie("access_token");
+    res.status(200).json("User Deleted !!!");
   } catch (error) {
     next(error);
   }

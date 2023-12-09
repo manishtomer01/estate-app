@@ -7,6 +7,9 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import {
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
@@ -14,11 +17,12 @@ import {
 import { app } from "../firebase";
 export default function Profile() {
   const fileRef = useRef(null);
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
-  const [formData, setFormData] = useState(currentUser);
+  const [formData, setFormData] = useState({});
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
   // firebase storage
   // allow read;
@@ -78,13 +82,31 @@ export default function Profile() {
         return;
       }
       dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
     }
   }
 
+  async function handleDeleteUser() {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  }
+
   return (
-    <div className="p-3 max-w-lg mx-auto">
+    <div className="max-w-lg p-3 mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
@@ -98,9 +120,9 @@ export default function Profile() {
           onClick={() => fileRef.current.click()}
           src={formData.avator || currentUser.avator}
           alt="profile"
-          className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
+          className="self-center object-cover w-24 h-24 mt-2 rounded-full cursor-pointer"
         />
-        <p className="text-sm self-center">
+        <p className="self-center text-sm">
           {fileUploadError ? (
             <span className="text-red-700">
               Error Image upload (image must be less than 2 mb)
@@ -117,7 +139,7 @@ export default function Profile() {
           type="text"
           placeholder="username"
           id="username"
-          className="border p-3 rounded-lg"
+          className="p-3 border rounded-lg"
           defaultValue={currentUser.username}
           onChange={handleChange}
         />
@@ -125,7 +147,7 @@ export default function Profile() {
           type="email"
           placeholder="email"
           id="email"
-          className="border p-3 rounded-lg"
+          className="p-3 border rounded-lg"
           defaultValue={currentUser.email}
           onChange={handleChange}
         />
@@ -133,17 +155,29 @@ export default function Profile() {
           type="text"
           placeholder="password"
           id="password"
-          className="border p-3 rounded-lg"
+          className="p-3 border rounded-lg"
           onChange={handleChange}
         />
-        <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
-          update
+        <button
+          disabled={loading}
+          className="p-3 text-white uppercase rounded-lg bg-slate-700 hover:opacity-95 disabled:opacity-80"
+        >
+          {loading ? "loading..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer">Delete account</span>
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-700 cursor-pointer"
+        >
+          Delete account
+        </span>
         <span className="text-red-700 cursor-pointer">Sign out</span>
       </div>
+      <p className="mt-5 text-red-700">{error ? error : ""}</p>
+      <p className="mt-5 text-green-700">
+        {updateSuccess ? "User Updated Successfully" : ""}
+      </p>
     </div>
   );
 }
