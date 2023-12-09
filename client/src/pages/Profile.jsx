@@ -13,6 +13,9 @@ import {
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
+  signOutUserStart,
+  signOutUserSuccess,
+  signOutUserFailure,
 } from "../redux/user/userSlice";
 import { app } from "../firebase";
 export default function Profile() {
@@ -34,6 +37,7 @@ export default function Profile() {
     if (file) {
       handleFileUpload(file);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]);
 
   const handleFileUpload = (file) => {
@@ -52,6 +56,7 @@ export default function Profile() {
       },
       (error) => {
         setFileUploadError(true);
+        console.log("fileUploadError --->>", error);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
@@ -102,6 +107,21 @@ export default function Profile() {
       dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
+    }
+  }
+
+  async function handleSignOut() {
+    try {
+      dispatch(signOutUserStart());
+      const res = await fetch("/api/auth/signout");
+      const data = res.json();
+      if (data.success === false) {
+        dispatch(signOutUserFailure(data.message));
+        return;
+      }
+      dispatch(signOutUserSuccess(data));
+    } catch (error) {
+      dispatch(signOutUserFailure(error.message));
     }
   }
 
@@ -172,7 +192,9 @@ export default function Profile() {
         >
           Delete account
         </span>
-        <span className="text-red-700 cursor-pointer">Sign out</span>
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
+          Sign out
+        </span>
       </div>
       <p className="mt-5 text-red-700">{error ? error : ""}</p>
       <p className="mt-5 text-green-700">

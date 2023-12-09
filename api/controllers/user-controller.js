@@ -1,14 +1,8 @@
 import { errorHandler } from "../utils/error.js";
 import bcrptyjs from "bcryptjs";
 import User from "../models/user-model.js";
-export function test(req, res) {
-  res.json({
-    message: "User Controller",
-  });
-}
 
 export async function updateUser(req, res, next) {
-  // console.log("req.user:>> ", res.user);
   if (res.user.id !== req.params.id)
     return next(errorHandler(401, "you can only updatr your own account !!!"));
   try {
@@ -38,9 +32,9 @@ export async function deleteUser(req, res, next) {
   if (res.user.id !== req.params.id)
     return next(errorHandler(401, "you can only delete your account only"));
   try {
-    await User.findByIdAndDelete(req.params.id);
+    const data = await User.findByIdAndDelete(req.params.id);
     res.clearCookie("access_token");
-    res.status(200).json("User Deleted !!!");
+    res.status(200).json(data);
   } catch (error) {
     next(error);
   }
