@@ -37,7 +37,7 @@ export default function Profile() {
     if (file) {
       handleFileUpload(file);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]);
 
   const handleFileUpload = (file) => {
@@ -72,6 +72,9 @@ export default function Profile() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    formData.username ? "" : (formData.username = currentUser.name);
+    formData.email ? "" : (formData.email = currentUser.email);
+    formData.password ? "" : (formData.password = currentUser.password);
     try {
       dispatch(updateUserStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
