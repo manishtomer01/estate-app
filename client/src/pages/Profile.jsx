@@ -18,6 +18,7 @@ import {
   signOutUserFailure,
 } from "../redux/user/userSlice";
 import { app } from "../firebase";
+import { Link } from "react-router-dom";
 export default function Profile() {
   const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -187,6 +188,12 @@ export default function Profile() {
         >
           {loading ? "loading..." : "Update"}
         </button>
+        <Link
+          className="p-3 text-center text-white uppercase bg-green-500 rounded-lg hover:opacity-95"
+          to="/create-listing"
+        >
+          Create Listing
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span
