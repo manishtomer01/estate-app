@@ -1,7 +1,12 @@
 import express from "express";
-import { updateUser, deleteUser } from "../controllers/user-controller.js";
+import {
+  updateUser,
+  deleteUser,
+  getUserListings,
+} from "../controllers/user-controller.js";
 import { varifyToken } from "../utils/verify-user.js";
 const router = express.Router();
 router.post("/update/:id", varifyToken, updateUser);
 router.delete("/delete/:id", varifyToken, deleteUser);
+router.get("/listings/:id", varifyToken, getUserListings);
 export default router;

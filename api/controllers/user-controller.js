@@ -1,6 +1,7 @@
 import { errorHandler } from "../utils/error.js";
 import bcrptyjs from "bcryptjs";
 import User from "../models/user-model.js";
+import Listing from "../models/listing-model.js";
 
 export async function updateUser(req, res, next) {
   if (res.user.id !== req.params.id)
@@ -37,5 +38,18 @@ export async function deleteUser(req, res, next) {
     res.status(200).json(data);
   } catch (error) {
     next(error);
+  }
+}
+
+export async function getUserListings(req, res, next) {
+  if (res.user.id === req.params.id) {
+    try {
+      const listings = await Listing.find({ userRef: req.params.id });
+      res.status(200).json(listings);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandler(403, "You cannot view other user's listings"));
   }
 }
