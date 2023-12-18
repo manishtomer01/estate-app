@@ -52,6 +52,9 @@ export default function Listing() {
           setImageUploadError("Image Upload failed (2mb max par image)");
           setUploading(false);
         });
+    } else if (files.length <= 0) {
+      setImageUploadError("you must select at least one image !!!");
+      setUploading(false);
     } else {
       setImageUploadError("you can only upload 6 images per listing");
       setUploading(false);
