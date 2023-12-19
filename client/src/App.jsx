@@ -1,6 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import { HeaderComponent, PrivateRoute } from "./components";
-import { About, Home, Listing, Profile, SignIn, SignUp } from "./pages";
+import {
+  About,
+  Home,
+  Listing,
+  Profile,
+  SignIn,
+  SignUp,
+  UpdateListing,
+} from "./pages";
 export default function App() {
   return (
     <>
@@ -14,6 +22,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path={"/profile"} element={<Profile />} />
           <Route path={"/create-listing"} element={<Listing />} />
+          <Route path={"/update-listing/:id"} element={<UpdateListing />} />
         </Route>
       </Routes>
     </>

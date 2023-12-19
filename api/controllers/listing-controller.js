@@ -47,3 +47,15 @@ export const updateListing = async (req, res, next) => {
     next(error);
   }
 };
+
+export async function getListing(req, res, next) {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) {
+      return next(errorHandler(404, "No such listing exists"));
+    }
+    res.status(200).json(listing);
+  } catch (error) {
+    next(error);
+  }
+}
