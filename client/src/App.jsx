@@ -4,6 +4,7 @@ import {
   About,
   Home,
   Listing,
+  ListingShow,
   Profile,
   SignIn,
   SignUp,
@@ -18,7 +19,7 @@ export default function App() {
         <Route path={"/sign-in"} element={<SignIn />} />
         <Route path={"/sign-up"} element={<SignUp />} />
         <Route path={"/about"} element={<About />} />
-        <Route path={"/listing/:id"} element={<Listing />} />
+        <Route path={"/listing/:id"} element={<ListingShow />} />
         <Route element={<PrivateRoute />}>
           <Route path={"/profile"} element={<Profile />} />
           <Route path={"/create-listing"} element={<Listing />} />

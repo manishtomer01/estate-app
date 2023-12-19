@@ -159,7 +159,7 @@ export default function UpdateListing() {
       if (data.success === false) {
         setError(data.message);
       }
-      navigate(`/listing/${id}`);
+      navigate(`/listing/${id}`, { state: { formData } });
     } catch (error) {
       setError(error.message);
       setLoading(false);
