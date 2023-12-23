@@ -9,6 +9,7 @@ import {
   SignIn,
   SignUp,
   UpdateListing,
+  Search,
 } from "./pages";
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path={"/sign-in"} element={<SignIn />} />
         <Route path={"/sign-up"} element={<SignUp />} />
         <Route path={"/about"} element={<About />} />
+        <Route path={"/search"} element={<Search />} />
         <Route path={"/listing/:id"} element={<ListingShow />} />
         <Route element={<PrivateRoute />}>
           <Route path={"/profile"} element={<Profile />} />

@@ -6,3 +6,4 @@ export { default as SignUp } from "./SignUp";
 export { default as Listing } from "./Listing";
 export { default as UpdateListing } from "./UpdateListing";
 export { default as ListingShow } from "./ListingShow";
+export { default as Search } from "./Search";
