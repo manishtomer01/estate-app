@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ListingItems from "../components/ListingItems";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Search() {
   const navigate = useNavigate();
@@ -16,7 +17,6 @@ export default function Search() {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -50,15 +50,9 @@ export default function Search() {
 
     const fetchListings = async () => {
       setLoading(true);
-      setShowMore(false);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
-      if (data.length > 8) {
-        setShowMore(true);
-      } else {
-        setShowMore(false);
-      }
       setListings(data);
       setLoading(false);
     };
@@ -121,15 +115,14 @@ export default function Search() {
     const searchQuery = urlParams.toString();
     const res = await fetch(`api/listing/get?${searchQuery}`);
     const data = await res.json();
-    if (data.length < 9) {
-      setShowMore(false);
-    }
     setListings([...listings, ...data]);
   };
 
   return (
     <div className="flex flex-col md:flex-row">
-      <div className="border-b-2 p-7 md:border-r-2 md:min-h-screen">
+      <div
+        className="border-b-2 p-7 sticky top-0 h-full md:border-r-2 md:min-h-screen"
+      >
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <div className="flex items-center gap-2">
             <label className="font-semibold whitespace-nowrap">
@@ -240,19 +233,20 @@ export default function Search() {
           {loading && (
             <p className="w-full text-xl text-center text-slate-700">loading</p>
           )}
-          {!loading &&
-            listings &&
-            listings.map((listing, index) => (
-              <ListingItems listing={listing} key={index} />
-            ))}
-
-          {showMore && (
-            <button
-              className="w-full text-center text-green-700 hover:underline p-7"
-              onClick={onShowMoreClick}
+          {!loading && listings && (
+            <InfiniteScroll
+              className="flex flex-wrap justify-evenly gap-8"
+              dataLength={listings.length}
+              next={() => {
+                onShowMoreClick();
+              }}
+              hasMore={true}
+              loader={loading && <h4>Loading...</h4>}
             >
-              Show More
-            </button>
+              {listings.map((listing, index) => (
+                <ListingItems listing={listing} key={index} />
+              ))}
+            </InfiniteScroll>
           )}
         </div>
       </div>
